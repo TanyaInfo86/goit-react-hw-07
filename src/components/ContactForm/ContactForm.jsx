@@ -1,15 +1,20 @@
 import { useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
+import { addContact } from '../../redux/contactsOps';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import s from './ContactForm.module.css';
+import styles from './ContactForm.module.css';
 
 const ContactForm = () => {
     const dispatch = useDispatch();
 
     const validationSchema = Yup.object().shape({
-        name: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Required'),
-        number: Yup.string().matches(/^\d{3}-\d{2}-\d{2}$/, 'Format: 123-45-67').required('Required'),
+        name: Yup.string()
+            .min(2, 'Занадто коротке ім’я')
+            .max(50, 'Занадто довге ім’я')
+            .required("Обов'язкове поле"),
+        number: Yup.string()
+            .matches(/^\d{3}-\d{2}-\d{2}$/, 'Формат: 123-45-67')
+            .required("Обов'язкове поле"),
     });
 
     return (
@@ -17,22 +22,22 @@ const ContactForm = () => {
             initialValues={{ name: '', number: '' }}
             validationSchema={validationSchema}
             onSubmit={(values, { resetForm }) => {
-                dispatch(addContact(values.name, values.number));
+                dispatch(addContact(values));
                 resetForm();
             }}
         >
-            <Form className={s.wraper}>
+            <Form className={styles.form}>
                 <label>
-                    Name
-                    <Field type="text" name="name" className={s.field} />
-                    <ErrorMessage name="name" component="div" className={s.error} />
+                    Ім’я
+                    <Field type="text" name="name" className={styles.field} />
+                    <ErrorMessage name="name" component="div" className={styles.error} />
                 </label>
                 <label>
-                    Number
-                    <Field type="text" name="number" className={s.field} />
-                    <ErrorMessage name="number" component="div" className={s.error} />
+                    Номер
+                    <Field type="text" name="number" className={styles.field} />
+                    <ErrorMessage name="number" component="div" className={styles.error} />
                 </label>
-                <button type="submit" className="button">Add contact</button>
+                <button type="submit" className={styles.butt}>Додати контакт</button>
             </Form>
         </Formik>
     );
